@@ -42,7 +42,7 @@ function getThemeServerSnapshot(): Theme {
   return 'dark';
 }
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children }: { children?: React.ReactNode }) {
   const theme = useSyncExternalStore(subscribeTheme, getThemeSnapshot, getThemeServerSnapshot);
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 

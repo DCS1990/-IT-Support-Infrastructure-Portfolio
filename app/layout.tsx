@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -19,10 +20,16 @@ export const metadata: Metadata = {
     'ITIL V3',
     'MAS Holdings',
     'Brandix',
-    'Sri Lanka IT Specialist'
+    'Sri Lanka IT Specialist',
   ],
   authors: [{ name: 'Chaminda Sampath' }],
   creator: 'Chaminda Sampath',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' },
+    ],
+  },
   openGraph: {
     title: 'Chaminda Sampath – IT Support Specialist | Infrastructure & Asset Management',
     description:
@@ -83,14 +90,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+      <body
+        suppressHydrationWarning
+        className="min-h-screen bg-[#f4f8fd] dark:bg-[#010309] text-slate-900 dark:text-white antialiased transition-colors duration-300 font-sans"
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      <body suppressHydrationWarning className="min-h-screen bg-[#f4f8fd] dark:bg-[#010309] text-slate-900 dark:text-white antialiased transition-colors duration-300">
         <ThemeProvider>
           {children}
         </ThemeProvider>
@@ -98,4 +105,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-

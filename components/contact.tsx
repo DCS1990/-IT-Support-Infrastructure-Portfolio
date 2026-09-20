@@ -11,7 +11,8 @@ import {
   CheckCircle2,
   AlertCircle,
   MessageSquare,
-  Clock
+  Clock,
+  Loader2
 } from 'lucide-react';
 import { personalInfo } from '@/src/data/profile';
 
@@ -25,24 +26,42 @@ export const Contact: React.FC = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError(null);
 
-    // Simulate clean client-side submission (as backend is not initially required)
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to send message.');
+      }
+
       setSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 600);
+    } catch (err: any) {
+      setSubmitError(
+        err.message || 'Something went wrong. Please email chaminda.d.sampath@gmail.com directly.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -246,15 +265,21 @@ export const Contact: React.FC = () => {
                     <label htmlFor="contact-subject" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Subject
                     </label>
-                    <input
+                    <select
                       id="contact-subject"
                       name="subject"
-                      type="text"
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder="e.g. Senior IT Support / ITAM Specialist Opportunity"
-                      className="w-full px-3.5 py-2.5 rounded-lg text-sm bg-blue-50/50 dark:bg-[#020612] border border-blue-200 dark:border-[#0f234e] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                      className="w-full px-3.5 py-2.5 rounded-lg text-sm bg-blue-50/50 dark:bg-[#020612] border border-blue-200 dark:border-[#0f234e] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select a subject...</option>
+                      <option value="Job Opportunity – IT Support / ITAM Specialist">Job Opportunity – IT Support / ITAM Specialist</option>
+                      <option value="IT Infrastructure Inquiry">IT Infrastructure Inquiry</option>
+                      <option value="IT Asset Management Project">IT Asset Management Project</option>
+                      <option value="Collaboration / Partnership">Collaboration / Partnership</option>
+                      <option value="General Inquiry">General Inquiry</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
 
                   <div>
@@ -273,13 +298,24 @@ export const Contact: React.FC = () => {
                     />
                   </div>
 
+                  {/* Error feedback */}
+                  {submitError && (
+                    <div className="flex items-start gap-2.5 p-3.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+                      <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span>{submitError}</span>
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3 px-6 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                    className="w-full py-3 px-6 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
                   >
                     {isSubmitting ? (
-                      <span>Sending Message...</span>
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Sending Message...</span>
+                      </>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />

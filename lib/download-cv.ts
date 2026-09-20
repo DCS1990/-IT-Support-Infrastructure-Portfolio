@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * Robust CV Download Helper
  * Handles downloads across standard browsers, mobile devices, and sandboxed iframes.

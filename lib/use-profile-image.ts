@@ -39,13 +39,6 @@ export function useProfileImage() {
     try {
       localStorage.setItem(STORAGE_KEY, dataUrl);
       window.dispatchEvent(new Event('profile_image_updated'));
-      
-      // Also persist to server in background so it becomes the permanent default
-      fetch('/api/upload-profile-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: dataUrl }),
-      }).catch((err) => console.warn('Could not persist to server:', err));
     } catch {
       // ignore
     }

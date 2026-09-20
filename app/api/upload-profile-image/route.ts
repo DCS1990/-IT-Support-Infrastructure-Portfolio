@@ -36,6 +36,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Empty image buffer' }, { status: 400 });
     }
 
+    // Maximum 5MB file size limit
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (buffer.length > MAX_SIZE) {
+      return NextResponse.json({ error: 'Image size exceeds the 5MB limit.' }, { status: 413 });
+    }
+
+    // Optional admin token check if configured in environment
+    const uploadSecret = process.env.ADMIN_UPLOAD_SECRET;
+    if (uploadSecret) {
+      const authHeader = req.headers.get('authorization') || req.headers.get('x-admin-secret');
+      if (authHeader !== `Bearer ${uploadSecret}` && authHeader !== uploadSecret) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
+
     // Target file path in public/assets/chaminda-profile.jpg
     const targetDir = path.join(process.cwd(), 'public', 'assets');
     if (!fs.existsSync(targetDir)) {

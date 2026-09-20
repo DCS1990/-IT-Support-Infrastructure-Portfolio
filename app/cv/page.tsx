@@ -31,6 +31,21 @@ export default function CvPage() {
   const [downloading, setDownloading] = useState(false);
   const { profileImage, setCustomImage } = useProfileImage();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [declarationDate, setDeclarationDate] = useState<string>(personalDetails.declarationDate);
+
+  React.useEffect(() => {
+    const today = new Date();
+    const day = today.getDate();
+    const getOrdinal = (n: number) => {
+      const s = ['th', 'st', 'nd', 'rd'];
+      const v = n % 100;
+      return s[(v - 20) % 10] || s[v] || s[0];
+    };
+    const dayStr = String(day).padStart(2, '0');
+    const month = today.toLocaleString('en-US', { month: 'long' });
+    const year = today.getFullYear();
+    setDeclarationDate(`${dayStr}${getOrdinal(day)} of ${month} ${year}`);
+  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -577,7 +592,7 @@ export default function CvPage() {
               <div className="mt-4 flex justify-between items-end">
                 <div>
                   <p className="font-bold text-slate-900 dark:text-white text-sm">Chaminda Sampath</p>
-                  <p className="text-[11px] text-slate-500">{personalDetails.declarationDate}</p>
+                  <p className="text-[11px] text-slate-500">{declarationDate}</p>
                 </div>
                 <div className="text-[11px] text-slate-400 font-mono">
                   Curriculum Vitae

@@ -108,7 +108,7 @@ export interface PersonalDetails {
   gender: string;
   dob: string;
   nationality: string;
-  nic: string;
+  nic?: string;
   maritalStatus: string;
   address: string;
   phones: string[];
@@ -402,7 +402,7 @@ export const projectsList: ProjectItem[] = [
     technologies: ["Python", "JavaScript", "REST API", "MySQL", "React"],
     status: "In Production",
     githubUrl: "https://github.com/DCS1990",
-    liveUrl: "#",
+    liveUrl: undefined,
     highlights: [
       "Centralized hardware registry with automated warranty status calculations",
       "Audit trail tracking asset handovers, technician assignments, and return dates",
@@ -420,7 +420,7 @@ export const projectsList: ProjectItem[] = [
     technologies: ["Python", "Excel Data Analysis", "Interactive Dashboard", "REST API"],
     status: "Completed",
     githubUrl: "https://github.com/DCS1990",
-    liveUrl: "#",
+    liveUrl: undefined,
     highlights: [
       "Visual breakdown of active, idle, in-repair, and decommissioned assets",
       "Automated alerts for machines offline for >30 consecutive days",
@@ -438,7 +438,7 @@ export const projectsList: ProjectItem[] = [
     technologies: ["Next.js", "Node.js", "TypeScript", "Tailwind CSS", "MongoDB"],
     status: "In Production",
     githubUrl: "https://github.com/DCS1990",
-    liveUrl: "#",
+    liveUrl: undefined,
     highlights: [
       "Status tracking pipeline from 'Under Inspection' to 'Vendor Quotation' to 'Completed'",
       "Cost tracking per hardware category to inform future procurement decisions",
@@ -456,7 +456,7 @@ export const projectsList: ProjectItem[] = [
     technologies: ["Next.js", "TypeScript", "Firebase Auth", "MongoDB", "Tailwind CSS"],
     status: "Completed",
     githubUrl: "https://github.com/DCS1990",
-    liveUrl: "#",
+    liveUrl: undefined,
     highlights: [
       "Role-based dashboard for employees, team leads, and department heads",
       "Real-time attendance summary analytics with date-range export filters",
@@ -474,7 +474,7 @@ export const projectsList: ProjectItem[] = [
     technologies: ["PowerShell", "Python", "Windows Task Scheduler", "SMTP API"],
     status: "In Production",
     githubUrl: "https://github.com/DCS1990",
-    liveUrl: "#",
+    liveUrl: undefined,
     highlights: [
       "Ping sweep with threshold-based failure triggers to reduce false positives",
       "Detailed event logging for root-cause analysis during post-incident reviews",
@@ -492,7 +492,7 @@ export const projectsList: ProjectItem[] = [
     technologies: ["Google Apps Script", "PowerShell", "Microsoft Graph API", "JSON"],
     status: "Completed",
     githubUrl: "https://github.com/DCS1990",
-    liveUrl: "#",
+    liveUrl: undefined,
     highlights: [
       "Automated data parsing matching MAC addresses, serial numbers, and assigned users",
       "Highlights missing or non-compliant machines with automated color coding",
@@ -689,17 +689,30 @@ export const educationList: EducationItem[] = [
   }
 ];
 
+const getTodayDeclarationDate = (): string => {
+  const today = new Date();
+  const day = today.getDate();
+  const getOrdinal = (n: number) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+  };
+  const dayStr = String(day).padStart(2, "0");
+  const month = today.toLocaleString("en-US", { month: "long" });
+  const year = today.getFullYear();
+  return `${dayStr}${getOrdinal(day)} of ${month} ${year}`;
+};
+
 export const personalDetails: PersonalDetails = {
   gender: "Male",
   dob: "26th June 1990",
   nationality: "Sri Lankan",
-  nic: "901731306V",
   maritalStatus: "Married",
   address: "No: 260/3, Kongolla, Hatharabage, Balangoda, Sri Lanka",
   phones: ["+94 77 649 6163 (WhatsApp)", "+94 75 560 6269"],
   email: "chaminda.d.sampath@gmail.com",
   hobbies: ["Traveling", "Photography", "Movies", "Gaming"],
-  declarationDate: "02nd of April 2026"
+  declarationDate: getTodayDeclarationDate()
 };
 
 export const refereesList: RefereeItem[] = [

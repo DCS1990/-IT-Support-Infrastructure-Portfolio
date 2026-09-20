@@ -926,7 +926,20 @@ async function generateCV() {
     color: darkNavy,
   });
   p2MainY -= 10;
-  page2.drawText('02nd of April 2026', {
+  const now = new Date();
+  const day = now.getDate();
+  const getOrdinal = (n) => {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+  };
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const dayStr = String(day).padStart(2, '0');
+  const todayDateStr = `${dayStr}${getOrdinal(day)} of ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+  page2.drawText(todayDateStr, {
     x: contentX,
     y: p2MainY,
     size: 7.5,
